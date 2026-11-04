@@ -370,3 +370,8 @@ MigrationBackup/
 # Structured-documentation working data (manifest, hashes, reference graph, generator scripts).
 # The generated documentation tree under Docs/ is kept; only the regenerable working data is ignored.
 Docs/data/
+dist/
+testserver/
+VanillaServerPlugin/bin/
+VanillaServerPlugin/obj/
+VanillaServerPlugin/Krafs.Publicizer.*.log
