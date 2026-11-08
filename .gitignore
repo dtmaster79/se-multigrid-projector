@@ -375,3 +375,7 @@ testserver/
 VanillaServerPlugin/bin/
 VanillaServerPlugin/obj/
 VanillaServerPlugin/Krafs.Publicizer.*.log
+TorchServerPlugin/bin/
+TorchServerPlugin/obj/
+*.Publicizer*.log
+Krafs.Publicizer*.log
