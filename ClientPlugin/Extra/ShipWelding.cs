@@ -14,6 +14,7 @@ using VRage.Game;
 using VRage;
 using VRageMath;
 using MultigridProjector.Logic;
+using MultigridProjector.Utilities;
 using MultigridProjectorClient.Utilities;
 using VRage.Game.Entity;
 
@@ -21,8 +22,21 @@ namespace MultigridProjectorClient.Extra
 {
     internal static class ShipWelding
     {
+        private static int frameCounter;
+
         public static void WeldLoop()
         {
+            // Compatibility feature for servers without the plugin. A server with the plugin welds
+            // projected blocks with ship welders itself, the client loop would only repeat the
+            // expensive Havok build checks of all projected blocks in reach every frame.
+            if (Comms.ServerHasPlugin)
+                return;
+
+            // Ship welders work every 10th frame, there is no point checking more often
+            if (++frameCounter < 10)
+                return;
+            frameCounter = 0;
+
             // Get the currently piloted grid
             if (!(MyAPIGateway.Session?.Player?.Controller?.ControlledEntity?.Entity is MyShipController shipController))
                 return;
@@ -113,8 +127,8 @@ namespace MultigridProjectorClient.Extra
         {
             HashSet<MySlimBlock> targets = new HashSet<MySlimBlock>();
 
-            // Disabled welders have no targets
-            if (welder.Enabled == false)
+            // Disabled or unpowered welders have no targets
+            if (!welder.IsWorking)
                 return targets;
 
             BoundingSphere detectorSphere = welder.DetectorSphere;
