@@ -1,3 +1,37 @@
+# Multigrid Projector (TG fork)
+
+This is a fork of Viktor Ferenczi's [Multigrid Projector](https://github.com/viktor-ferenczi/se-multigrid-projector)
+(MIT license, copyright and license kept unchanged in [LICENSE](LICENSE)). It follows the upstream releases and adds:
+
+- **Havok memory leak fix** in the plugin itself: the game's `MyCubeGrid.TestBlockPlacementArea` leaks the convex
+  shapes of every Havok placement test of armor slopes, corners and similar blocks (SE-1381). The fork's patch
+  `MyCubeGrid_TestBlockPlacementArea_ShapeLeak` hands them to the list shape with `HkReferencePolicy.TakeOwnership`,
+  so they are released. Upstream only reduces how often the test runs and leaves the fix to a separate plugin.
+- **Server plugins for Torch and the vanilla Dedicated Server** (`TorchServerPlugin`, `VanillaServerPlugin`), with the
+  same patches and projector logic as the upstream Magnetar server plugin. Ready to use packages are attached to the
+  [releases](../../releases).
+
+The network protocol is the upstream one, so this fork's client works with upstream servers and the other way round.
+
+**Never enable this plugin together with Viktor's "Multigrid Projector" in Pulsar.** Both patch the same game code.
+Pick one of them: "Multigrid Projector (TG)" is this fork.
+
+### Torch server
+
+Unpack `MultigridProjector-Torch-<version>.zip` into `<Torch>\Plugins\`, so there is a folder
+`Plugins\MultigridProjector` with `MultigridProjectorTorch.dll`, `0Harmony.dll` and `manifest.xml`. Configuration:
+`MultigridProjector.cfg` in the Torch instance folder, written with defaults on the first start.
+
+### Vanilla Dedicated Server
+
+Unpack `MultigridProjector-DS-<version>.zip` into a folder on the server and add the full path of
+`MultigridProjectorVanillaDS.dll` under `<Plugins>` in `SpaceEngineers-Dedicated.cfg` (or on the Plugins tab of the
+configurator). Configuration: `MultigridProjector.cfg` next to `SpaceEngineers-Dedicated.cfg`.
+
+Clients use the client plugin in the same version, "Multigrid Projector (TG)" in Pulsar.
+
+---
+
 # Multigrid Projector for Space Engineers
 
 Enables seamless building projections with multiple subgrids, also provides a few projector related QoL improvements.

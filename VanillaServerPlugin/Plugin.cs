@@ -92,7 +92,7 @@ public class Plugin : IPlugin
             configPath = Path.Combine(MyFileSystem.UserDataPath, ConfigFileName);
             config = LoadConfig(configPath);
             MultigridProjector.Config.PluginConfig.Current = config;
-            PluginLog.Info($"Configuration: PreviewBlockVisuals={config.PreviewBlockVisuals}, ProjectionPcuLimitPercent={config.ProjectionPcuLimitPercent} ({configPath})");
+            PluginLog.Info($"Configuration: PreviewBlockVisuals={config.PreviewBlockVisuals}, ProjectionPcuLimitPercent={config.ProjectionPcuLimitPercent}, PresenceDelaySeconds={config.PresenceDelaySeconds}, PresenceIntervalSeconds={config.PresenceIntervalSeconds}, BuildBesideAngledSubgrids={config.BuildBesideAngledSubgrids} ({configPath})");
 
             if (Environment.GetEnvironmentVariable("SE_PLUGIN_DISABLE_METHOD_VERIFICATION") == null)
             {

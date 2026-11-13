@@ -1,12 +1,14 @@
 # Multigrid Projector für den Vanilla-Dedicated-Server
 
-Eigene Fassung des Server-Plugins (Upstream: https://github.com/viktor-ferenczi/se-multigrid-projector, MIT-Lizenz) für den normalen `SpaceEngineersDedicated.exe` ohne Magnetar/Quasar. Zweig `vanilla-ds`.
+Eigene Fassung des Server-Plugins (Upstream: https://github.com/viktor-ferenczi/se-multigrid-projector, MIT-Lizenz) für den normalen `SpaceEngineersDedicated.exe` ohne Magnetar/Quasar.
 
 ## Unterschied zum Upstream-Server-Plugin
 
 - **Konfiguration:** Datei `MultigridProjector.cfg` im Datenordner des Servers (der Ordner mit `SpaceEngineers-Dedicated.cfg`) statt Magnetar-PluginSdk. Sie wird beim ersten Start mit den Standardwerten angelegt. Ändern nur bei gestopptem Server.
   - `PreviewBlockVisuals` (Standard `true`)
   - `ProjectionPcuLimitPercent` (Standard `0` = aus)
+  - `PresenceDelaySeconds` (Standard `10`), `PresenceIntervalSeconds` (Standard `300`)
+  - `BuildBesideAngledSubgrids` (Standard `true`)
 - **Start:** Der Vanilla-DS ruft `IPlugin.Init` erst nach dem Laden der Welt auf. Das Plugin wendet die Patches deshalb schon im Konstruktor an, also vor dem Laden der Welt. `Init` bleibt als Rückfall.
 - Patches, Projektor-Logik (`Shared`) und Version sind unverändert aus dem Upstream übernommen.
 
