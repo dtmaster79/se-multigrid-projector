@@ -13,6 +13,7 @@ uses the workspace's Linux scripts, so it doesn't run on Windows yet.
 | `test_references.py` | toolbar items (in toolbars and waypoint actions), bound and turret cameras, tool, weapon and selection lists, and block groups of welded blocks across subgrids, and the same after a referenced block is welded again |
 | `test_rebuild.py` | welding again after losing a top subgrid, a base or a block on a subgrid, and after a save and reload halfway |
 | `test_load.py` | a blueprint loaded into a projector during the session, the way the blueprint screen does it |
+| `test_angled.py` | a block beside a sibling subgrid mounted at an angle gets built: the far block of each of two rotor arms, one turned by 30 degrees in the blueprint, is taken away and welded back while the other arm is complete (SE-1402) |
 | `test_survival.py` | survival welding by ship welders fed from cargo containers: the heads created at construction stage get finished, and every component that leaves the containers ends up in a block. Also the welder on a piston of GitHub issue #136, reaching into a projected block's cell |
 | `test_voxel.py` | projected blocks reaching into the terrain: a large static station welds its column into the ground, a small static station stops at the terrain, as the game's own build check decides by the grid's building settings |
 | `test_pb_api.py` | MGP's PB API holding together on every tick while subgrids are taken away and welded again, with and without block highlighting (GitHub issue #114) |
@@ -35,6 +36,36 @@ welding places what the vanilla server can't build. There is no PB API on the
 server, so it checks the projector's totals and follows each welded base on the
 station to its head and subgrid through Remote.
 
+`ds/test_havok_leak_ds.py` measures the client's Havok memory near a repair
+projection of a damaged ship (SE-1381): a server without the MGP plugin, the
+client's character in a cockpit, a long row of enabled ship welders without
+components next to missing armor slopes and corners. It reads the Physics
+column of the game's `MEMORY VALUES` log lines, which the `ds/stats-probe`
+plugin makes the client write every 2 seconds, for 40 seconds. The leak is the
+game's and the Bugfixes plugin fixes it: with `MGP_BUGFIXES_REPO`, a working
+copy of CometWorks/bugfixes, the client and the server run with Bugfixes and
+the memory must stay flat. Without it the memory must grow by 10 MB or more,
+which shows that Ship Welding still runs its checks. The client starts with an
+MGP 0.9.1 config file, which must come out converted with its options kept.
+
+The client/server compatibility tests (SE-1273) are in `ds/` too, with their
+helpers in `ds/compat.py`. The server sends its presence packet 1 s after a
+player joins in every server test, and these set the repeat to 3 s:
+
+| File | Server | Client | What it checks |
+|---|---|---|---|
+| `test_presence_ds.py` | MGP | MGP | full mode soon after the join, the packet repeating every 3 s |
+| `test_anticheat_ds.py` | MGP, Anti-Cheat | MGP, plain player | full mode welds of main grid and subgrids arrive as mod messages, Anti-Cheat refuses nothing |
+| `test_protocol_mismatch_ds.py` | MGP of another protocol id, Anti-Cheat | MGP, plain player | the client ignores the packet once, stays client-only and sends only vanilla build requests |
+| `test_vanilla_client_ds.py` | MGP | none | the vanilla client welds the first grid with vanilla requests |
+| `test_lobby_host_ds.py` | client 1 hosting a lobby | client 2 | the host's client plugin sends the presence packet and builds the joiner's requests |
+
+The Anti-Cheat tests need `MGP_ANTI_CHEAT_REPO`, a working copy of
+CometWorks/anti-cheat whose guards compile under Magnetar (SE-1251). Without it
+they skip. Plain players can't use the admin teleport, so those benches get a
+medical room shared with all, and the character spawns there. Anti-Cheat is
+set to kick on the first refusal, since it logs a refusal only when it kicks.
+
 The mechanical combinations are the game's own, from its CubeBlocks
 definitions, DLC blocks left out (the clients run without Steam):
 
@@ -44,6 +75,9 @@ definitions, DLC blocks left out (the clients run without Steam):
   5x5, plain and mirrored) with its wheel
 - `chain`: a hinge carrying a piston carrying a rotor, and a rotor carrying two
   pistons
+- `angled`: two rotors two cells apart with an arm of three armor blocks each.
+  `fixtures.py` turns the second arm by 30 degrees towards the first when it
+  writes the blueprint (`Combo.angle`), so the arms' far ends touch.
 - `survival`: a rotor and a piston, and an armor block on the floor strip.
   `survival.py` adds the ship welders, conveyors and stocked cargo containers
   to the station, and a piston lying on the strip with a welder on its head
@@ -168,6 +202,8 @@ dotnet test tests/unit
 | `MGP_KEEP=1` | leave the client (and server) running after the run |
 | `MGP_ATTACH=1` | reuse a client (and server) of the slot already in the test world |
 | `MGP_WINDOWED=1` | a real window instead of headless |
-| `MGP_EXTRA_ARGS` | more launcher options |
+| `MGP_EXTRA_ARGS` | more launcher options, like `-bin64 <game Bin64>` when Pulsar can't find the game |
+| `MGP_ANTI_CHEAT_REPO` | the Anti-Cheat working copy of the compatibility tests |
+| `MGP_BUGFIXES_REPO` | the Bugfixes working copy of `ds/test_havok_leak_ds.py` |
 
 What MGP logged during each test goes to `tests/artifacts/<test file>.log`.

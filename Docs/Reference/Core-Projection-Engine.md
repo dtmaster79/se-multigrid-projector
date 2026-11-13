@@ -15,14 +15,15 @@ parent [../Architecture.md](../Architecture.md) and [../API.md](../API.md).
 
 | File | Lines | Purpose |
 |------|------:|---------|
-| [MultigridProjection.cs](../../Shared/Logic/MultigridProjection.cs) | 2354 | Central per-projector class: lifecycle, subgrid/connection bookkeeping, build & placement checks, the update loop, and all Harmony entry points. |
+| [MultigridProjection.cs](../../Shared/Logic/MultigridProjection.cs) | 2387 | Central per-projector class: lifecycle, subgrid/connection bookkeeping, build & placement checks, the update loop, and all Harmony entry points. |
 | [Subgrid.cs](../../Shared/Logic/Subgrid.cs) | 818 | One blueprint subgrid: preview grid, optional built grid, block models, connections, grid-event handling, and background block-state scanning. |
 | [ReferenceFixer.cs](../../Shared/Logic/ReferenceFixer.cs) | 699 | Restores inter-block references (toolbars, toolbar group items, controllers, weapon/tool selections, AI waypoints) on freshly built blocks by mapping blueprint IDs to built EntityIds. |
 | [MultigridProjectorApiProvider.cs](../../Shared/Logic/MultigridProjectorApiProvider.cs) | 228 | Implements `IMultigridProjectorApi` and publishes the Mod API (mod message) and Programmable Block API (terminal property). |
 | [ProjectedBlock.cs](../../Shared/Logic/ProjectedBlock.cs) | 166 | Pairs a preview block with its blueprint builder; detects build/grind state and drives preview transparency visuals. |
 | [MultigridUpdateWork.cs](../../Shared/Logic/MultigridUpdateWork.cs) | 134 | `IWork` background task that scans all supported subgrids off the main thread and raises a completion event. |
 | [ProjectionStats.cs](../../Shared/Logic/ProjectionStats.cs) | 87 | Aggregable block counts (total, remaining, buildable, per-type) used for projector stats and completion. |
-| [MultigridProjectorSession.cs](../../Shared/Logic/MultigridProjectorSession.cs) | 64 | Session object wiring up Mod API request handling and lazy PB API registration. |
+| [MultigridProjectorSession.cs](../../Shared/Logic/MultigridProjectorSession.cs) | 76 | Session object wiring up Mod API request handling, lazy PB API registration and the `Comms` update. |
+| [BuildRequests.cs](../../Shared/Logic/BuildRequests.cs) | 138 | Server side of the full mode build requests clients send as mod messages: identity, reach and rate checks, then `MultigridProjection.BuildInternal`. |
 | [Connection.cs](../../Shared/Logic/Connection.cs) | 59 | `Connection<T>` base plus `BaseConnection`/`TopConnection`: one side of a mechanical link. |
 | [FastBlockLocation.cs](../../Shared/Logic/FastBlockLocation.cs) | 53 | `(gridIndex, position)` value struct with hand-written equality/hash to avoid boxing. |
 | [BlockMinLocation.cs](../../Shared/Logic/BlockMinLocation.cs) | 26 | `(gridIndex, minPosition)` key struct used to map blueprint and preview mechanical blocks. |
@@ -158,9 +159,10 @@ projector's `EntityId`; lookups are the primary way patches reach the engine.
 | `IsConnected` | method (private) | Whether a base and its top are actually attached (same TopBlock EntityId). |
 | `UpdateSubgridConnectedness` / `UnregisterDisconnectedSubgrids` | method (private) | Flood-fill `IsConnectedToProjector`; unregister subgrids that split off. |
 | `UpdateGridTransformations` | method (private) | Re-position preview grids each frame, aligning to built/positioned neighbours. |
-| `BuildInternal` | method (server) | Validates and issues the actual block build request on the correct subgrid (DLC/welding/buildable checks). |
+| `BuildInternal` | method (server) | Validates and issues the actual block build request on the given subgrid (DLC/welding/buildable checks). A client's vanilla RPC builds on subgrid 0; the subgrid comes from MGP's own local calls and full mode build requests. |
 | `CanBuild` | method | Reimplemented build check across the preview/built transform (connectivity, voxels, Havok). |
 | `TestPlacementAreaCube` | method | True if a base block's preview maps to a built top subgrid (placement gate). |
+| `IsBarelyTouchingOnlySiblingSubgrids` | method | True if everything in the block's cells belongs to built subgrids of this projection and none of it reaches into the inner half of the block (placement gate for subgrids at an angle, SE-1402). |
 | `FindProjectedBlock` | method (private) | Ray-pick the nearest buildable preview block for hand welding (per-thread scratch arrays). |
 | `FindProjectedBlocks` | method (static, server) | Ship-welder variant: find all buildable preview blocks in a detector sphere. |
 | `MyWelder_FindProjectedBlock` | method (static, client) | Client welder entry point delegating to `FindProjectedBlock`. |
@@ -437,8 +439,24 @@ Programmable Block API once a PB appears in the world.
 | `MultigridProjectorSession()` | ctor | Create `Comms`, subscribe to entity-create, register the Mod API request handler. |
 | `Dispose` | method | Unregister handlers and dispose `Comms`. |
 | `OnEntityCreate` | method (private) | Notice when a programmable block first appears. |
-| `Update` | method | Once a PB exists, register the PB API one time. |
+| `Update` | method | Every frame: `Comms.Update` (presence packets), and once a PB exists, register the PB API one time. |
 | `HandleModApiRequest` | method (static, private) | Respond to a Mod API request with the `ModApi` payload. |
+
+## BuildRequests
+
+*`public static class BuildRequests` in `MultigridProjector.Logic`.*
+
+The server side of the full mode build requests (see `Comms`). Building from here is a local call as far as
+the game is concerned, so guards on the vanilla `BuildInternal` RPC, like Anti-Cheat's, don't see it. The
+same checks are done here: the owner is the sender's identity, the builder is the sender's character, the
+block is within 15 m, and a sender makes at most 20 requests a second. Reach and rate are skipped for players
+with creative rights. `MultigridProjection.BuildInternal` then runs in an event context of the sender, so the
+game's own checks apply as for a vanilla RPC.
+
+| Member | Kind | Description |
+|--------|------|-------------|
+| `Handle(ulong sender, BuildRequest request)` | method (static) | Check and build one request; refusals are logged once per sender and reason. |
+| `NoteRpc(ulong sender, long owner, long builtBy)` | method (static) | Log once per client whether its `BuildInternal` RPCs carry vanilla arguments. |
 
 ## FastBlockLocation
 

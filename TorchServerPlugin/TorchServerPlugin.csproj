@@ -297,7 +297,7 @@
 
   <!-- Torch-Bibliotheken aus einer Torch-Installation (Torch.dll, Torch.API.dll, NLog.dll) -->
   <PropertyGroup>
-    <TorchDir Condition="'$(TorchDir)' == ''">H:\SE-Torch\A\</TorchDir>
+    <!-- set TorchDir in Directory.Build.props.user or with -p:TorchDir=... -->
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Torch"><HintPath>$(TorchDir)Torch.dll</HintPath><Private>False</Private></Reference>
@@ -345,6 +345,8 @@
            Text="Could not locate the Dedicated Server DedicatedServer64 folder. Set &lt;Dedicated64&gt; in &quot;$(RepoRoot)Directory.Build.props.user&quot;." />
     <Error Condition="!Exists('$(Dedicated64)')"
            Text="Invalid Dedicated64 path &quot;$(Dedicated64)&quot; in &quot;$(RepoRoot)Directory.Build.props[.user]&quot;." />
+    <Error Condition="'$(TorchDir)' == '' or !Exists('$(TorchDir)Torch.dll')"
+           Text="Torch.dll not found. Set &lt;TorchDir&gt; (a Torch installation folder, ending with a separator) in &quot;$(RepoRoot)Directory.Build.props.user&quot; or pass -p:TorchDir=..." />
   </Target>
 
 

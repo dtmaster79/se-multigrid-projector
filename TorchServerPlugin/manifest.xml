@@ -2,5 +2,5 @@
 <PluginManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Name>Multigrid Projector (TG)</Name>
   <Guid>1b6bee29-61df-4e7a-b94e-3facd8202abf</Guid>
-  <Version>v0.9.11</Version>
+  <Version>v1.0.2</Version>
 </PluginManifest>

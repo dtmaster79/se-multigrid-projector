@@ -14,9 +14,10 @@ _15 files, 4748 lines._
 | File | Type | Lines |
 | ---- | ---- | ----: |
 | [Shared/Logic/BlockMinLocation.cs](../Shared/Logic/BlockMinLocation.cs) | csharp | 26 |
+| [Shared/Logic/BuildRequests.cs](../Shared/Logic/BuildRequests.cs) | csharp | 144 |
 | [Shared/Logic/Connection.cs](../Shared/Logic/Connection.cs) | csharp | 59 |
 | [Shared/Logic/FastBlockLocation.cs](../Shared/Logic/FastBlockLocation.cs) | csharp | 53 |
-| [Shared/Logic/MultigridProjection.cs](../Shared/Logic/MultigridProjection.cs) | csharp | 2300 |
+| [Shared/Logic/MultigridProjection.cs](../Shared/Logic/MultigridProjection.cs) | csharp | 2387 |
 | [Shared/Logic/MultigridProjectorApiProvider.cs](../Shared/Logic/MultigridProjectorApiProvider.cs) | csharp | 228 |
 | [Shared/Logic/MultigridProjectorSession.cs](../Shared/Logic/MultigridProjectorSession.cs) | csharp | 74 |
 | [Shared/Logic/MultigridUpdateWork.cs](../Shared/Logic/MultigridUpdateWork.cs) | csharp | 134 |
@@ -80,7 +81,8 @@ _18 files, 1253 lines._
 
 | File | Type | Lines |
 | ---- | ---- | ----: |
-| [Shared/Utilities/Comms.cs](../Shared/Utilities/Comms.cs) | csharp | 123 |
+| [Shared/Utilities/Comms.cs](../Shared/Utilities/Comms.cs) | csharp | 209 |
+| [Shared/Utilities/Presence.cs](../Shared/Utilities/Presence.cs) | csharp | 213 |
 | [Shared/Utilities/EnsureOriginal.cs](../Shared/Utilities/EnsureOriginal.cs) | csharp | 111 |
 | [Shared/Utilities/Events.cs](../Shared/Utilities/Events.cs) | csharp | 138 |
 | [Shared/Utilities/ExecLocation.cs](../Shared/Utilities/ExecLocation.cs) | csharp | 22 |
@@ -160,7 +162,7 @@ _8 files, 1589 lines._
 | [ClientPlugin/Extra/CraftProjection.cs](../ClientPlugin/Extra/CraftProjection.cs) | csharp | 316 |
 | [ClientPlugin/Extra/ProjectorAligner.cs](../ClientPlugin/Extra/ProjectorAligner.cs) | csharp | 300 |
 | [ClientPlugin/Extra/RepairProjection.cs](../ClientPlugin/Extra/RepairProjection.cs) | csharp | 57 |
-| [ClientPlugin/Extra/ShipWelding.cs](../ClientPlugin/Extra/ShipWelding.cs) | csharp | 150 |
+| [ClientPlugin/Extra/ShipWelding.cs](../ClientPlugin/Extra/ShipWelding.cs) | csharp | 157 |
 | [ClientPlugin/Extra/ToolbarFix.cs](../ClientPlugin/Extra/ToolbarFix.cs) | csharp | 51 |
 
 ## [Client GUI Dialogs](Reference/Client-Menus.md)
@@ -179,7 +181,7 @@ _18 files, 1182 lines._
 
 | File | Type | Lines |
 | ---- | ---- | ----: |
-| [ClientPlugin/Settings/ConfigStorage.cs](../ClientPlugin/Settings/ConfigStorage.cs) | csharp | 44 |
+| [ClientPlugin/Settings/ConfigStorage.cs](../ClientPlugin/Settings/ConfigStorage.cs) | csharp | 66 |
 | [ClientPlugin/Settings/Elements/Button.cs](../ClientPlugin/Settings/Elements/Button.cs) | csharp | 36 |
 | [ClientPlugin/Settings/Elements/Checkbox.cs](../ClientPlugin/Settings/Elements/Checkbox.cs) | csharp | 35 |
 | [ClientPlugin/Settings/Elements/Color.cs](../ClientPlugin/Settings/Elements/Color.cs) | csharp | 86 |
