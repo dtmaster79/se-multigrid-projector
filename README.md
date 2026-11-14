@@ -3,10 +3,9 @@
 This is a fork of Viktor Ferenczi's [Multigrid Projector](https://github.com/viktor-ferenczi/se-multigrid-projector)
 (MIT license, copyright and license kept unchanged in [LICENSE](LICENSE)). It follows the upstream releases and adds:
 
-- **Havok memory leak fix** in the plugin itself: the game's `MyCubeGrid.TestBlockPlacementArea` leaks the convex
-  shapes of every Havok placement test of armor slopes, corners and similar blocks (SE-1381). The fork's patch
-  `MyCubeGrid_TestBlockPlacementArea_ShapeLeak` hands them to the list shape with `HkReferencePolicy.TakeOwnership`,
-  so they are released. Upstream only reduces how often the test runs and leaves the fix to a separate plugin.
+- **No Havok leak fix of its own anymore** (since 1.0.2.1): the leak of `MyCubeGrid.TestBlockPlacementArea`
+  (SE-1381) is fixed by the Bugfixes plugin (upstream `CometWorks/bugfixes`, our fork TG-Bugfixes), as upstream
+  intends. Run it next to this plugin on servers and clients.
 - **Server plugins for Torch and the vanilla Dedicated Server** (`TorchServerPlugin`, `VanillaServerPlugin`), with the
   same patches and projector logic as the upstream Magnetar server plugin. Ready to use packages are attached to the
   [releases](../../releases).
