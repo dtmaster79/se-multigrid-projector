@@ -56,9 +56,10 @@ namespace MultigridProjector.Logic
                 || request.Owner != identityId
                 || character == null
                 || character.EntityId != request.Builder
+                || !BuildPermission.IsSendersCharacter(sender, request.Builder)
             )
             {
-                Refuse(sender, "not the sender's own identity and character", request);
+                Refuse(sender, "not the sender's own identity and controlled character", request);
                 return;
             }
 
@@ -114,6 +115,16 @@ namespace MultigridProjector.Logic
                 builtBy == owner
                     ? $"BuildInternal RPC from {sender} with vanilla arguments"
                     : $"BuildInternal RPC from {sender} with builtBy {builtBy}, not the owner {owner}"
+            );
+        }
+
+        // A refused BuildInternal RPC from a client, for the record
+        public static void NoteRefusedRpc(ulong sender, string reason, Vector3I position)
+        {
+            LogOnce(
+                sender,
+                "rpc " + reason,
+                $"Refused a BuildInternal RPC from {sender}: {reason} (block {position.X},{position.Y},{position.Z})"
             );
         }
 

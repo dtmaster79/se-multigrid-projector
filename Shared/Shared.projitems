@@ -21,6 +21,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\MyObjectBuilderExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\MyProjectorBaseExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logic\BlockMinLocation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logic\BuildPermission.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logic\BuildRequests.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logic\Connection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logic\FastBlockLocation.cs" />
