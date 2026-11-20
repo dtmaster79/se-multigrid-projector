@@ -1430,6 +1430,10 @@ System.NullReferenceException: Object reference not set to an instance of an obj
                 return;
             }
 
+            // World limits and building material, as the game checks them since SE 1.211.018
+            if (!BuildPermission.AllowBuild(previewBlock, builtGrid, owner, builder, requestInstant, MyEventContext.Current.Sender.Value))
+                return;
+
             // Transform from the preview grid's coordinates to the grid being build (they don't match exactly for the projecting grid)
             // FIXME: Potential optimization opportunity on the non-projecting grids
 
