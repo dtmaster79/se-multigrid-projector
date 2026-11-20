@@ -1,10 +1,10 @@
-# Multigrid Projector (TG fork)
+# Multigrid Projector (Syntrix fork)
 
 This is a fork of Viktor Ferenczi's [Multigrid Projector](https://github.com/viktor-ferenczi/se-multigrid-projector)
 (MIT license, copyright and license kept unchanged in [LICENSE](LICENSE)). It follows the upstream releases and adds:
 
 - **No Havok leak fix of its own anymore** (since 1.0.2.1): the leak of `MyCubeGrid.TestBlockPlacementArea`
-  (SE-1381) is fixed by the Bugfixes plugin (upstream `CometWorks/bugfixes`, our fork TG-Bugfixes), as upstream
+  (SE-1381) is fixed by the Bugfixes plugin (upstream `CometWorks/bugfixes`, our fork Syntrix-Bugfixes), as upstream
   intends. Run it next to this plugin on servers and clients.
 - **Server plugins for Torch and the vanilla Dedicated Server** (`TorchServerPlugin`, `VanillaServerPlugin`), with the
   same patches and projector logic as the upstream Magnetar server plugin. Ready to use packages are attached to the
@@ -13,7 +13,7 @@ This is a fork of Viktor Ferenczi's [Multigrid Projector](https://github.com/vik
 The network protocol is the upstream one, so this fork's client works with upstream servers and the other way round.
 
 **Never enable this plugin together with Viktor's "Multigrid Projector" in Pulsar.** Both patch the same game code.
-Pick one of them: "Multigrid Projector (TG)" is this fork.
+Pick one of them: "Multigrid Projector (Syntrix)" is this fork.
 
 ### Torch server
 
@@ -27,7 +27,7 @@ Unpack `MultigridProjector-DS-<version>.zip` into a folder on the server and add
 `MultigridProjectorVanillaDS.dll` under `<Plugins>` in `SpaceEngineers-Dedicated.cfg` (or on the Plugins tab of the
 configurator). Configuration: `MultigridProjector.cfg` next to `SpaceEngineers-Dedicated.cfg`.
 
-Clients use the client plugin in the same version, "Multigrid Projector (TG)" in Pulsar.
+Clients use the client plugin in the same version, "Multigrid Projector (Syntrix)" in Pulsar.
 
 ---
 
